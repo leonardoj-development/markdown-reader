@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.py[cod]
+build/
+dist/
+*.spec
+*.log
+.tmp/
+.pip-cache/
+.piptmp/
+.appdata*/
+*.tmpdir
+tests/tmp/
+tools/shots/
+tools/test-docs/
+tools/*.exe

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>Lector MD</title>
+  <script>
+    try {
+      document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    } catch (error) {}
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <svg class="svg-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-logo" viewBox="0 0 32 32">
+      <rect width="32" height="32" rx="9" fill="currentColor"/>
+      <path d="M10.2 8.4h7.6l4 4v10.9c0 .9-.7 1.6-1.6 1.6h-10c-.9 0-1.6-.7-1.6-1.6V10c0-.9.7-1.6 1.6-1.6Z" fill="var(--logo-paper, #fbfaf6)"/>
+      <path d="M17.8 8.4v4h4" fill="none" stroke="var(--logo-line, #236b58)" stroke-width="1.2" stroke-linejoin="round"/>
+      <path d="M12.8 15.4h6.4M12.8 18.2h6.4M12.8 21h3.8" fill="none" stroke="var(--logo-line, #236b58)" stroke-width="1.35" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24">
+      <path d="M3 7.4A2.4 2.4 0 0 1 5.4 5h3.8l2 2h7.4A2.4 2.4 0 0 1 21 9.4v7.2a2.4 2.4 0 0 1-2.4 2.4H5.4A2.4 2.4 0 0 1 3 16.6Z"/>
+    </symbol>
+    <symbol id="i-folder-open" viewBox="0 0 24 24">
+      <path d="M3 8V6.7A1.7 1.7 0 0 1 4.7 5h3.5l2 2h7.1A1.7 1.7 0 0 1 19 8.7V10"/>
+      <path d="M4.3 10h16.2a1 1 0 0 1 .96 1.28l-2 6.2a1.8 1.8 0 0 1-1.7 1.22H4.8a1.8 1.8 0 0 1-1.7-1.22l-2-6.2A1 1 0 0 1 2.06 10Z"/>
+    </symbol>
+    <symbol id="i-file" viewBox="0 0 24 24">
+      <path d="M13.5 3H6.8A1.8 1.8 0 0 0 5 4.8v14.4A1.8 1.8 0 0 0 6.8 21h10.4a1.8 1.8 0 0 0 1.8-1.8V8.5Z"/>
+      <path d="M13.5 3v5.5H19M8.7 12.2h6.6M8.7 15.2h6.6M8.7 18.2h4"/>
+    </symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m5 9 7 7 7-7"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19"/></symbol>
+    <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M20 12H4m6-6-6 6 6 6"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 20V4m-6 6 6-6 6 6"/></symbol>
+    <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.2"/><path d="M9 4v16"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5"/><path d="M4 17v-5h5"/><path d="M6.1 8.1a7.5 7.5 0 0 1 12.3-1.6L20 8M4 16l1.6 1.5A7.5 7.5 0 0 0 17.9 16"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-8 8"/><path d="M18 14v4.2A1.8 1.8 0 0 1 16.2 20H5.8A1.8 1.8 0 0 1 4 18.2V7.8A1.8 1.8 0 0 1 5.8 6H10"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5.8A1.8 1.8 0 0 0 14.2 4H5.8A1.8 1.8 0 0 0 4 5.8v8.4A1.8 1.8 0 0 0 5.8 16H8"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m4.5 12.5 5 5L19.5 7"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8.2v.2"/></symbol>
+    <symbol id="i-keyboard" viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M6 9h.01M9.5 9h.01M13 9h.01M16.5 9h.01M20 9h.01M6 12.5h.01M9.5 12.5h.01M13 12.5h.01M16.5 12.5h.01M7 16h10"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4.8A.8.8 0 0 1 9.8 4h4.4a.8.8 0 0 1 .8.8V7m3 0-.7 12.1a1.8 1.8 0 0 1-1.8 1.7H8.5a1.8 1.8 0 0 1-1.8-1.7L6 7m4 4v6m4-6v6"/></symbol>
+    <symbol id="i-hash" viewBox="0 0 24 24"><path d="M9.5 3 7 21M17 3l-2.5 18M4 8.5h16M3.5 15.5h16"/></symbol>
+    <symbol id="i-folder-plus" viewBox="0 0 24 24"><path d="M3 7.4A2.4 2.4 0 0 1 5.4 5h3.8l2 2h7.4A2.4 2.4 0 0 1 21 9.4v7.2a2.4 2.4 0 0 1-2.4 2.4H5.4A2.4 2.4 0 0 1 3 16.6Z"/><path d="M12 11v5m-2.5-2.5h5"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 4.1 2.7 17.2A2 2 0 0 0 4.4 20h15.2a2 2 0 0 0 1.7-2.8L13.7 4.1a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4m0 3v.1"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.1 1.1"/><path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.1-1.1"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="m4 17 5-5 4 4 2-2 5 5"/></symbol>
+    <symbol id="i-up-right" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 4.8A1.8 1.8 0 0 1 5.8 3H11v18H5.8A1.8 1.8 0 0 1 4 19.2Z"/><path d="M20 4.8A1.8 1.8 0 0 0 18.2 3H13v18h5.2a1.8 1.8 0 0 0 1.8-1.8Z"/></symbol>
+    <symbol id="i-command" viewBox="0 0 24 24"><path d="M9 6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3Z"/></symbol>
+  </svg>
+
+  <div class="boot-screen" id="bootScreen">
+    <div class="boot-mark"><svg class="logo-mark"><use href="#i-logo"></use></svg></div>
+    <div class="boot-name">Lector MD</div>
+    <div class="boot-progress"><span></span></div>
+  </div>
+
+  <div class="app" id="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-row">
+        <button class="brand" id="brandButton" aria-label="Abrir menú">
+          <span class="brand-mark"><svg class="logo-mark"><use href="#i-logo"></use></svg></span>
+          <span class="brand-copy">
+            <span class="brand-name">Lector MD</span>
+            <span class="brand-sub">tu biblioteca markdown</span>
+          </span>
+        </button>
+        <button class="icon-btn" id="menuButton" aria-label="Menú principal" aria-haspopup="menu" aria-expanded="false" title="Menú principal">
+          <svg class="icon"><use href="#i-more"></use></svg>
+        </button>
+      </div>
+
+      <div class="sidebar-actions">
+        <button class="open-folder-btn" id="openFolderButton">
+          <svg class="icon"><use href="#i-folder-plus"></use></svg>
+          <span>Abrir carpeta</span>
+          <kbd>Ctrl O</kbd>
+        </button>
+      </div>
+
+      <div class="folder-card" id="folderCard" hidden>
+        <span class="folder-card-icon"><svg class="icon"><use href="#i-folder-open"></use></svg></span>
+        <span class="folder-card-copy">
+          <span class="folder-card-name" id="folderName">—</span>
+          <span class="folder-card-meta" id="folderMeta">—</span>
+        </span>
+        <button class="icon-btn tiny" id="refreshFolderButton" aria-label="Recargar carpeta" title="Recargar carpeta">
+          <svg class="icon"><use href="#i-refresh"></use></svg>
+        </button>
+      </div>
+
+      <div class="sidebar-search" id="filterWrap">
+        <svg class="icon search-icon"><use href="#i-search"></use></svg>
+        <input id="filterInput" type="text" placeholder="Filtrar documentos…" autocomplete="off" spellcheck="false" aria-label="Filtrar documentos">
+        <button class="clear-filter" id="clearFilterButton" aria-label="Limpiar filtro" hidden>
+          <svg class="icon"><use href="#i-x"></use></svg>
+        </button>
+        <kbd class="filter-kbd">/</kbd>
+      </div>
+
+      <div class="sidebar-tabs" role="tablist" aria-label="Panel lateral">
+        <button class="sidebar-tab is-active" id="filesTab" role="tab" aria-selected="true" aria-controls="filesPanel" data-tab="files">
+          Documentos <span class="tab-count" id="documentCount">0</span>
+        </button>
+        <button class="sidebar-tab" id="searchTab" role="tab" aria-selected="false" aria-controls="searchPanel" data-tab="search">
+          Buscar
+        </button>
+      </div>
+
+      <div class="sidebar-panels">
+        <section class="sidebar-panel is-active" id="filesPanel" role="tabpanel" aria-labelledby="filesTab">
+          <div class="tree" id="tree" role="tree"></div>
+          <div class="sidebar-empty" id="treeEmpty" hidden>
+            <span class="sidebar-empty-icon"><svg class="icon"><use href="#i-folder"></use></svg></span>
+            <p>Abre una carpeta para ver tus documentos.</p>
+            <button class="text-link" id="emptyOpenFolder">Abrir carpeta</button>
+          </div>
+          <div class="sidebar-empty" id="treeNoMatches" hidden>
+            <p>Ningún documento coincide con el filtro.</p>
+            <button class="text-link" id="clearFilterLink">Limpiar filtro</button>
+          </div>
+        </section>
+
+        <section class="sidebar-panel" id="searchPanel" role="tabpanel" aria-labelledby="searchTab" hidden>
+          <form class="content-search" id="contentSearchForm">
+            <div class="content-search-input">
+              <svg class="icon"><use href="#i-search"></use></svg>
+              <input id="contentSearchInput" type="text" placeholder="Buscar en el contenido…" autocomplete="off" spellcheck="false" aria-label="Buscar en el contenido de los documentos">
+              <button class="search-submit" type="submit" aria-label="Buscar" title="Buscar">
+                <svg class="icon"><use href="#i-arrow-right"></use></svg>
+              </button>
+            </div>
+          </form>
+          <div class="search-status" id="searchStatus"></div>
+          <div class="search-results" id="searchResults"></div>
+          <div class="sidebar-empty search-empty" id="searchEmpty">
+            <span class="sidebar-empty-icon"><svg class="icon"><use href="#i-search"></use></svg></span>
+            <p>Encuentra una palabra o frase en todos los documentos de esta carpeta.</p>
+          </div>
+        </section>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="footer-btn" id="themeQuickButton" title="Cambiar tema">
+          <svg class="icon theme-icon"><use href="#i-sun"></use></svg>
+          <span id="themeQuickLabel">Tema claro</span>
+        </button>
+        <button class="footer-btn" id="helpButton" title="Atajos y ayuda">
+          <svg class="icon"><use href="#i-keyboard"></use></svg>
+          <span>Atajos</span>
+        </button>
+      </div>
+    </aside>
+
+    <div class="sidebar-resizer" id="sidebarResizer" aria-hidden="true"></div>
+    <div class="sidebar-scrim" id="sidebarScrim" hidden></div>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-btn" id="sidebarToggle" aria-label="Mostrar u ocultar barra lateral" title="Mostrar u ocultar barra lateral (Ctrl+B)">
+          <svg class="icon"><use href="#i-panel"></use></svg>
+        </button>
+        <div class="nav-buttons">
+          <button class="icon-btn" id="backButton" aria-label="Atrás" title="Atrás (Alt+←)" disabled>
+            <svg class="icon"><use href="#i-arrow-left"></use></svg>
+          </button>
+          <button class="icon-btn" id="forwardButton" aria-label="Adelante" title="Adelante (Alt+→)" disabled>
+            <svg class="icon"><use href="#i-arrow-right"></use></svg>
+          </button>
+        </div>
+        <div class="location" id="location" title="">
+          <span class="location-folder" id="locationFolder">Biblioteca</span>
+          <span class="location-separator">/</span>
+          <span class="location-file" id="locationFile">Sin documento</span>
+        </div>
+        <div class="topbar-actions">
+          <button class="icon-btn action-with-label" id="findButton" aria-label="Buscar en el documento" title="Buscar en el documento (Ctrl+F)" disabled>
+            <svg class="icon"><use href="#i-search"></use></svg>
+            <span>Buscar</span>
+          </button>
+          <button class="icon-btn" id="tocButton" aria-label="Mostrar u ocultar el índice" title="Mostrar u ocultar el índice" disabled>
+            <svg class="icon"><use href="#i-list"></use></svg>
+          </button>
+          <button class="icon-btn" id="documentMenuButton" aria-label="Acciones del documento" aria-haspopup="menu" aria-expanded="false" title="Acciones del documento" disabled>
+            <svg class="icon"><use href="#i-more"></use></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="find-bar" id="findBar" hidden>
+        <svg class="icon find-bar-icon"><use href="#i-search"></use></svg>
+        <input id="findInput" type="text" placeholder="Buscar en este documento…" autocomplete="off" spellcheck="false" aria-label="Buscar en este documento">
+        <span class="find-count" id="findCount">0 de 0</span>
+        <span class="find-divider"></span>
+        <button class="icon-btn tiny" id="findPrevButton" aria-label="Resultado anterior" title="Anterior (Mayús+Enter)">
+          <svg class="icon"><use href="#i-chevron-down"></use></svg>
+        </button>
+        <button class="icon-btn tiny" id="findNextButton" aria-label="Resultado siguiente" title="Siguiente (Enter)">
+          <svg class="icon"><use href="#i-chevron-down"></use></svg>
+        </button>
+        <button class="icon-btn tiny" id="findCloseButton" aria-label="Cerrar búsqueda" title="Cerrar (Esc)">
+          <svg class="icon"><use href="#i-x"></use></svg>
+        </button>
+      </div>
+
+      <div class="loading-line" id="loadingLine"></div>
+      <div class="reading-progress" id="readingProgress"></div>
+
+      <div class="content-area" id="contentArea">
+        <section class="welcome" id="welcome">
+          <div class="welcome-inner">
+            <div class="paper-stack" aria-hidden="true">
+              <div class="paper paper-back"></div>
+              <div class="paper paper-middle"></div>
+              <div class="paper paper-front">
+                <span class="paper-hash">#</span>
+                <span class="paper-line line-1"></span>
+                <span class="paper-line line-2"></span>
+                <span class="paper-line line-3"></span>
+                <span class="paper-cursor"></span>
+              </div>
+              <span class="paper-spark spark-1"></span>
+              <span class="paper-spark spark-2"></span>
+            </div>
+
+            <p class="welcome-kicker">Tu biblioteca Markdown</p>
+            <h1 class="welcome-title">Leer sin ruido.<br><em>Encontrar sin perderte.</em></h1>
+            <p class="welcome-subtitle">Abre una carpeta y recorre todos sus documentos desde un solo lugar. Tablas, código, tareas e imágenes, exactamente como los escribiste.</p>
+            <div class="welcome-actions">
+              <button class="primary-button" id="welcomeOpenButton">
+                <svg class="icon"><use href="#i-folder-plus"></use></svg>
+                Abrir una carpeta
+              </button>
+              <button class="ghost-button" id="welcomeDemoButton" hidden>
+                <svg class="icon"><use href="#i-book"></use></svg>
+                Ver carpeta de ejemplo
+              </button>
+            </div>
+            <p class="welcome-hint"><kbd>Ctrl</kbd><span>+</span><kbd>O</kbd> para empezar · también puedes elegir una carpeta reciente</p>
+            <div class="welcome-recents" id="welcomeRecents" hidden></div>
+          </div>
+          <div class="welcome-footer">
+            <span><svg class="icon"><use href="#i-book"></use></svg> Disfruta la lectura</span>
+            <span class="welcome-footer-dot"></span>
+            <span id="welcomeVersion">Lector MD</span>
+          </div>
+        </section>
+
+        <section class="folder-empty" id="folderEmpty" hidden>
+          <div class="folder-empty-art"><svg class="icon"><use href="#i-folder-open"></use></svg></div>
+          <p class="welcome-kicker">Carpeta abierta</p>
+          <h2 id="folderEmptyTitle">Todavía no hay documentos aquí</h2>
+          <p id="folderEmptyText">Esta carpeta no contiene archivos Markdown. Prueba con otra carpeta o recarga si acabas de agregar archivos.</p>
+          <div class="folder-empty-actions">
+            <button class="primary-button" id="emptyFolderOpenButton">
+              <svg class="icon"><use href="#i-folder-plus"></use></svg>
+              Abrir otra carpeta
+            </button>
+            <button class="ghost-button" id="emptyFolderRefreshButton">
+              <svg class="icon"><use href="#i-refresh"></use></svg>
+              Recargar
+            </button>
+          </div>
+        </section>
+
+        <div class="content-grid" id="contentGrid" hidden>
+          <article class="reader" id="reader">
+            <div class="doc-meta" id="docMeta">
+              <span class="meta-item"><svg class="icon"><use href="#i-clock"></use></svg><span id="metaReading">—</span></span>
+              <span class="meta-dot"></span>
+              <span class="meta-item" id="metaWords">—</span>
+              <span class="meta-dot"></span>
+              <span class="meta-item" id="metaModified">—</span>
+              <div class="doc-meta-actions">
+                <button class="meta-button" id="copyPathButton" title="Copiar ruta del archivo">
+                  <svg class="icon"><use href="#i-copy"></use></svg>
+                  <span>Copiar ruta</span>
+                </button>
+                <button class="meta-button" id="revealButton" title="Mostrar en el Explorador">
+                  <svg class="icon"><use href="#i-folder-open"></use></svg>
+                </button>
+              </div>
+            </div>
+            <div class="prose" id="content"></div>
+            <footer class="doc-end">
+              <span class="doc-end-mark"></span>
+              <span>Fin del documento</span>
+              <button class="text-link" id="backToTopButton">Volver arriba</button>
+            </footer>
+          </article>
+
+          <aside class="toc" id="tocPanel" aria-label="Índice del documento">
+            <div class="toc-sticky">
+              <div class="toc-heading">
+                <span>En este documento</span>
+                <span class="toc-count" id="tocCount"></span>
+              </div>
+              <nav class="toc-list" id="tocList"></nav>
+              <p class="toc-empty" id="tocEmpty" hidden>Este documento no tiene encabezados.</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <footer class="statusbar">
+        <span class="status-left">
+          <span class="status-dot" id="statusDot"></span>
+          <span id="statusFolder">Listo para leer</span>
+        </span>
+        <span class="status-right">
+          <span id="statusEncoding"></span>
+          <span class="status-separator" id="statusSeparator" hidden></span>
+          <span id="statusStats"></span>
+        </span>
+      </footer>
+    </main>
+  </div>
+
+  <div class="popover app-menu" id="appMenu" role="menu" hidden>
+    <div class="menu-header">Lector MD</div>
+    <button class="menu-item" role="menuitem" data-action="open-folder">
+      <svg class="icon"><use href="#i-folder-plus"></use></svg><span>Abrir carpeta…</span><kbd>Ctrl O</kbd>
+    </button>
+    <button class="menu-item" role="menuitem" data-action="refresh-folder" id="menuRefreshFolder">
+      <svg class="icon"><use href="#i-refresh"></use></svg><span>Recargar carpeta</span><kbd>F5</kbd>
+    </button>
+    <button class="menu-item" role="menuitem" data-action="close-folder" id="menuCloseFolder">
+      <svg class="icon"><use href="#i-x"></use></svg><span>Cerrar carpeta</span>
+    </button>
+    <div class="menu-separator"></div>
+    <div class="menu-label">Tema</div>
+    <div class="theme-switch" role="group" aria-label="Tema">
+      <button data-theme-choice="light" title="Tema claro"><svg class="icon"><use href="#i-sun"></use></svg><span>Claro</span></button>
+      <button data-theme-choice="dark" title="Tema oscuro"><svg class="icon"><use href="#i-moon"></use></svg><span>Oscuro</span></button>
+      <button data-theme-choice="system" title="Tema del sistema"><svg class="icon"><use href="#i-monitor"></use></svg><span>Sistema</span></button>
+    </div>
+    <div class="menu-row">
+      <span>Tamaño de letra</span>
+      <div class="font-stepper">
+        <button data-font-step="-1" aria-label="Reducir letra">A−</button>
+        <span id="menuFontSize">17 px</span>
+        <button data-font-step="1" aria-label="Aumentar letra">A+</button>
+      </div>
+    </div>
+    <div class="menu-separator"></div>
+    <button class="menu-item" role="menuitem" data-action="help">
+      <svg class="icon"><use href="#i-keyboard"></use></svg><span>Atajos y acerca de</span><kbd>?</kbd>
+    </button>
+    <button class="menu-item danger" role="menuitem" data-action="quit">
+      <svg class="icon"><use href="#i-x"></use></svg><span>Salir</span>
+    </button>
+  </div>
+
+  <div class="popover doc-menu" id="docMenu" role="menu" hidden>
+    <button class="menu-item" role="menuitem" data-action="copy-path">
+      <svg class="icon"><use href="#i-copy"></use></svg><span>Copiar ruta del archivo</span>
+    </button>
+    <button class="menu-item" role="menuitem" data-action="reveal">
+      <svg class="icon"><use href="#i-folder-open"></use></svg><span>Mostrar en el Explorador</span>
+    </button>
+    <button class="menu-item" role="menuitem" data-action="reload-doc">
+      <svg class="icon"><use href="#i-refresh"></use></svg><span>Recargar documento</span>
+    </button>
+    <div class="menu-separator"></div>
+    <button class="menu-item" role="menuitem" data-action="find">
+      <svg class="icon"><use href="#i-search"></use></svg><span>Buscar en el documento</span><kbd>Ctrl F</kbd>
+    </button>
+    <button class="menu-item" role="menuitem" data-action="toggle-toc" id="menuToggleToc">
+      <svg class="icon"><use href="#i-list"></use></svg><span>Ocultar índice</span>
+    </button>
+    <div class="menu-separator"></div>
+    <button class="menu-item" role="menuitem" data-action="refresh-folder">
+      <svg class="icon"><use href="#i-refresh"></use></svg><span>Recargar carpeta</span>
+    </button>
+  </div>
+
+  <div class="modal-backdrop" id="helpModal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <button class="modal-close icon-btn" id="helpCloseButton" aria-label="Cerrar">
+        <svg class="icon"><use href="#i-x"></use></svg>
+      </button>
+      <div class="modal-brand">
+        <span class="modal-logo"><svg class="logo-mark"><use href="#i-logo"></use></svg></span>
+        <div>
+          <p class="welcome-kicker">Lector MD</p>
+          <h2 id="helpTitle">Leer, navegar, encontrar.</h2>
+          <p class="modal-version" id="aboutVersion">Versión 1.0.0 · Windows</p>
+        </div>
+      </div>
+      <p class="modal-copy">Un lector de escritorio para tus carpetas Markdown. Elige una carpeta, navega el árbol de documentos y concéntrate en leer.</p>
+      <div class="shortcut-columns">
+        <div class="shortcut-group">
+          <h3>Navegación</h3>
+          <div class="shortcut-row"><span>Abrir carpeta</span><kbd>Ctrl O</kbd></div>
+          <div class="shortcut-row"><span>Mostrar barra lateral</span><kbd>Ctrl B</kbd></div>
+          <div class="shortcut-row"><span>Ir atrás / adelante</span><span><kbd>Alt ←</kbd> <kbd>Alt →</kbd></span></div>
+          <div class="shortcut-row"><span>Recargar documento</span><kbd>F5</kbd></div>
+        </div>
+        <div class="shortcut-group">
+          <h3>Lectura</h3>
+          <div class="shortcut-row"><span>Buscar en el documento</span><kbd>Ctrl F</kbd></div>
+          <div class="shortcut-row"><span>Siguiente resultado</span><kbd>Enter</kbd></div>
+          <div class="shortcut-row"><span>Resultado anterior</span><kbd>Mayús Enter</kbd></div>
+          <div class="shortcut-row"><span>Ajustar letra</span><span><kbd>Ctrl +</kbd> <kbd>Ctrl −</kbd></span></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="ghost-button" id="openConfigButton">
+          <svg class="icon"><use href="#i-folder"></use></svg>
+          Abrir carpeta de configuración
+        </button>
+        <button class="primary-button" id="helpDoneButton">Listo</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lightbox-close icon-btn" id="lightboxClose" aria-label="Cerrar imagen">
+      <svg class="icon"><use href="#i-x"></use></svg>
+    </button>
+    <figure class="lightbox-figure">
+      <img id="lightboxImage" alt="">
+      <figcaption id="lightboxCaption"></figcaption>
+    </figure>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span class="toast-icon" id="toastIcon"><svg class="icon"><use href="#i-info"></use></svg></span>
+    <span class="toast-message" id="toastMessage"></span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

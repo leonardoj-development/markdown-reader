@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="270" viewBox="0 0 920 270">
+  <defs>
+    <linearGradient id="fondo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eef5ef"/>
+      <stop offset="1" stop-color="#fdfbf3"/>
+    </linearGradient>
+    <filter id="sombra" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#1c4034" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="920" height="270" rx="18" fill="url(#fondo)"/>
+  <g font-family="Segoe UI, sans-serif">
+    <g filter="url(#sombra)">
+      <rect x="42" y="66" width="238" height="138" rx="14" fill="#ffffff" stroke="#d7e4da"/>
+      <rect x="341" y="66" width="238" height="138" rx="14" fill="#ffffff" stroke="#d7e4da"/>
+      <rect x="640" y="66" width="238" height="138" rx="14" fill="#236b58"/>
+    </g>
+    <circle cx="82" cy="106" r="16" fill="#dcebe2"/>
+    <path d="M74 101h7l2 3h9a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H75a3 3 0 0 1-3-3v-11a3 3 0 0 1 3-3z" fill="none" stroke="#236b58" stroke-width="2" stroke-linejoin="round"/>
+    <text x="108" y="112" font-size="17" font-weight="600" fill="#23342c">Elegir carpeta</text>
+    <text x="66" y="150" font-size="13" fill="#6f7d73">Una ruta, todos tus</text>
+    <text x="66" y="170" font-size="13" fill="#6f7d73">documentos Markdown.</text>
+
+    <circle cx="381" cy="106" r="16" fill="#f4e7d3"/>
+    <path d="M374 112V99m0 0 5 5m-5-5-5 5M386 112V99" fill="none" stroke="#a8743b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="407" y="112" font-size="17" font-weight="600" fill="#23342c">Navegar</text>
+    <text x="365" y="150" font-size="13" fill="#6f7d73">Un árbol claro, sin</text>
+    <text x="365" y="170" font-size="13" fill="#6f7d73">perder el contexto.</text>
+
+    <circle cx="680" cy="106" r="16" fill="#3b7a67"/>
+    <path d="M673 99h10a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3h-10a3 3 0 0 1-3-3V99z" fill="none" stroke="#d7efe4" stroke-width="2"/>
+    <path d="M677 104h5m-5 4h7" stroke="#d7efe4" stroke-width="2" stroke-linecap="round"/>
+    <text x="706" y="112" font-size="17" font-weight="600" fill="#ffffff">Leer</text>
+    <text x="664" y="150" font-size="13" fill="#c5ded2">Tipografía cómoda,</text>
+    <text x="664" y="170" font-size="13" fill="#c5ded2">índice y búsqueda.</text>
+
+    <path d="M292 135h34" stroke="#b5c8ba" stroke-width="2" stroke-dasharray="5 5"/>
+    <path d="m320 129 7 6-7 6" fill="none" stroke="#b5c8ba" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M591 135h34" stroke="#b5c8ba" stroke-width="2" stroke-dasharray="5 5"/>
+    <path d="m619 129 7 6-7 6" fill="none" stroke="#b5c8ba" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
