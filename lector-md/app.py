@@ -171,9 +171,14 @@ def main() -> int:
         )
     except Exception as exc:
         logging.getLogger(__name__).exception("No se pudo iniciar la interfaz")
+        hint = (
+            "Asegúrate de que Microsoft Edge WebView2 Runtime esté instalado."
+            if sys.platform == "win32"
+            else "Revisa las dependencias de pywebview y el registro de la aplicación."
+        )
         show_error(
             "No se pudo iniciar Lector MD.\n\n"
-            "Asegúrate de que Microsoft Edge WebView2 Runtime esté instalado.\n\n"
+            f"{hint}\n\n"
             f"Detalle: {exc}"
         )
         return 1

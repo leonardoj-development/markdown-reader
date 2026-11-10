@@ -1,6 +1,6 @@
 # Lector MD
 
-Un lector de escritorio para tus carpetas Markdown en Windows. Elige una carpeta,
+Un lector de escritorio para tus carpetas Markdown. Elige una carpeta,
 navega sus documentos desde el árbol lateral y lee sin distracciones.
 
 ## Lo que incluye
@@ -25,7 +25,9 @@ La aplicación **solo lee** tus archivos: nunca modifica ni borra documentos.
 
 ## Abrir la aplicación
 
-Desde la raíz del proyecto, haz doble clic en **`iniciar-lector.bat`**.
+### Windows
+
+Desde la carpeta superior del proyecto, haz doble clic en **`iniciar-lector-md.bat`**.
 
 El lanzador:
 
@@ -42,6 +44,27 @@ Después de abrirla:
 
 Requisitos: Windows 10 u 11 con Microsoft Edge WebView2 Runtime. Windows 11 ya lo
 incluye; en Windows 10 suele venir con Microsoft Edge.
+
+### macOS
+
+Instala Python 3.12, por ejemplo con `brew install python@3.12`, y haz doble clic
+en **`iniciar-lector-md.command`**, en la carpeta superior del proyecto. También
+puedes ejecutarlo desde Terminal:
+
+```bash
+./iniciar-lector-md.command
+./iniciar-lector-md.command --folder "/ruta/a/mis notas"
+```
+
+La primera ejecución crea `lector-md/.venv-macos` e instala las dependencias;
+requiere conexión a internet. Si cambian las dependencias, el lanzador vuelve a
+instalarlas. Mantén abierta la ventana de Terminal mientras uses el lector; allí
+se muestran los errores de inicio. En macOS los ajustes y el registro se guardan
+en `~/.lector-md/`.
+
+El lector fue desarrollado originalmente para Windows: algunas acciones de
+integración con el sistema, como revelar archivos en el explorador o copiar
+mediante el botón de la aplicación, todavía son específicas de Windows.
 
 ## Atajos
 
@@ -88,7 +111,7 @@ tests/                  Pruebas del backend
 tools/make_assets.py    Regenera el icono y la portada de ejemplo
 ```
 
-El lanzador `iniciar-lector.bat` está en la carpeta superior del proyecto.
+Los lanzadores están en la carpeta superior del proyecto.
 
 Los ajustes se guardan en `%APPDATA%\LectorMD\settings.json` y el registro de la
 aplicación en `%APPDATA%\LectorMD\lector-md.log`.
